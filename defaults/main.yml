@@ -1,0 +1,21 @@
+---
+# defaults file for centminmod
+
+cmm_text_editor: "{{ text_editor }}"
+cmm_email_address: "{{ email_address }}"
+
+centminmod_branch: master
+centmin_script_location: /root/centminmod
+
+nsd_disabled: y # when set to =y, NSD disabled by default with chkconfig off
+pureftpd_disabled: y # when set to =y, Pure-FTPd disabled by default with chkconfig off
+
+php_version: 5.6.13
+zend_opcache_size: 100 # Number of megabytes
+
+memcached_cache_size: 10 # Number of megabytes
+
+lf_permblock_alert: 1 # Set to 0 to disable email alerts about blocked login attempts
+
+# This role defaults to opening 9279 for Tarsnap
+csf_allowed_tcp_outgoing_ports: 9279,993,995,465,587,1110,1194,9418,20,21,22,25,53,80,110,113,443,587,993,995

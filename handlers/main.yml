@@ -1,0 +1,14 @@
+---
+# handlers file for centminmod
+
+- name: restart php-fpm
+  service: name=php-fpm state=restarted
+
+- name: restart memcached
+  # BUG: service module doesn't work with Centminmod custom init.d/memcached script
+  # https://community.centminmod.com/threads/bug-in-initd-memcached-script-causing-problems-starting-restarting-memcached.2956/
+  #service: name=memcached state=restarted
+  command: service memcached restart
+
+- name: restart csf
+  command: csf -r

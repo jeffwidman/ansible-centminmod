@@ -1,0 +1,12 @@
+# Anything listed in here will override centmin.sh variables
+# https://community.centminmod.com/threads/how-to-help-test-08-centos-7-betas-with-github-code.813/page-22#post-13288
+
+EMAIL='{{ cmm_email_address }}'     # Server notification email address; enter only 1 address
+USEEDITOR='{{ cmm_text_editor }}'         # choice between nano or vim text editors for cmd shortcuts
+
+NGINX_IPV='y'           # Enable NGINX support for IPV6
+NSD_DISABLED={{ nsd_disabled }}          # when set to =y, NSD disabled by default with chkconfig off
+PUREFTPD_DISABLED={{ pureftpd_disabled }}     # when set to =y, Pure-FTPd disabled by default with chkconfig off
+
+PHP_VERSION='{{ php_version }}'
+ZOPCACHEDFT='y'         # Zend Opcache installed by default

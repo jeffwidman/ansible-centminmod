@@ -1,0 +1,73 @@
+---
+# tasks file for centminmod
+
+- name: Sync centminmod script with github.com
+  git:
+    repo: https://github.com/centminmod/centminmod.git
+    dest: "{{ centmin_script_location }}"
+    version: "{{ centminmod_branch }}"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: make script executable by root
+  file:
+    path: "{{ centmin_script_location }}/centmin.sh"
+    owner: root
+    group: root
+    mode: "u+x"
+
+- name: Assures etc/centminmod dir exists
+  file: path=/etc/centminmod state=directory
+
+- name: Add custom_config.inc file which overrides Centminmod default variables
+  # Anything listed in here will override centmin.sh variables
+  template: src=custom_config.inc.j2 dest=/etc/centminmod/custom_config.inc
+
+- name: manually run centminmod
+  pause:
+    prompt: |
+        Ansible paused.
+        In another terminal, manually ssh into the server to run centminmod.
+        Script must be run within its parent folder, so at the bash prompt enter:
+            cd {{ centmin_script_location }}
+            ./centmin.sh
+        Then use the menu options to:
+          1) Install/upgrade MariaDB, PHP, Nginx.
+          2) Add vhost domains to Nginx
+          3) Install ffmpeg (if installing Xenforo Media Gallery)
+
+        Then come back here and hit enter to continue.
+
+- name: Change Zend OPcache size to {{ zend_opcache_size }}
+  lineinfile:
+    dest: /etc/centminmod/php.d/zendopcache.ini
+    regexp: "^#?opcache.memory_consumption"
+    line: "opcache.memory_consumption={{ zend_opcache_size }}"
+  notify: restart php-fpm
+  tags: opcache
+
+- name: change memcache cache size to {{ memcached_cache_size }}
+  lineinfile:
+      dest: /etc/init.d/memcached
+      regexp: "^#?MEMSIZE"
+      line: "MEMSIZE={{ memcached_cache_size }}"
+  notify: restart memcached
+  tags: memcached
+
+- name: Configure /etc/csf/csf.conf
+  lineinfile:
+    dest: /etc/csf/csf.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - { regexp: "^#?LF_PERMBLOCK_ALERT", line: 'LF_PERMBLOCK_ALERT = "{{ lf_permblock_alert }}"' }
+    - { regexp: "^#?TCP_OUT", line: 'TCP_OUT="{{ csf_allowed_tcp_outgoing_ports }}"' }
+  notify: restart csf
+  tags: csf
+
+- name: Ensures users in Nginx group can access /home/nginx/domains/
+  shell: chmod -c g+rX /home/{nginx,nginx/domains}/
+  register: chmod_result
+  changed_when: "chmod_result.stdout != \"\""
