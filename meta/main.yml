@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Jeff Widman
-  description: Helper role that wraps centminmod.sh to manage common configuration settings
+  description: Helper role that wraps centminmod.sh to install/configure common setting
   company: jeffwidman.com
 
   license: MIT
