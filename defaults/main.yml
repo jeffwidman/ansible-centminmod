@@ -10,7 +10,7 @@ centmin_script_location: /root/centminmod
 nsd_disabled: y # when set to =y, NSD disabled by default with chkconfig off
 pureftpd_disabled: y # when set to =y, Pure-FTPd disabled by default with chkconfig off
 
-php_version: 5.6.13
+php_version: 5.6.14
 zend_opcache_size: 100 # Number of megabytes
 
 memcached_cache_size: 10 # Number of megabytes
