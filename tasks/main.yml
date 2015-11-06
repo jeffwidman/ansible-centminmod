@@ -39,15 +39,19 @@
 
         Then come back here and hit enter to continue.
 
-- name: Change Zend OPcache size to {{ zend_opcache_size }}
+- name: Set Zend OPcache enable: {{ zend_opcache_enable }} with size: {{ zend_opcache_size }} MB
   lineinfile:
     dest: /etc/centminmod/php.d/zendopcache.ini
-    regexp: "^#?opcache.memory_consumption"
-    line: "opcache.memory_consumption={{ zend_opcache_size }}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - { regexp: "^#?opcache.enable", line: "opcache.enable={{ zend_opcache_enable }}" }
+    - { regexp: "^#?opcache.memory_consumption", line: "opcache.memory_consumption={{ zend_opcache_size }}" }
   notify: restart php-fpm
   tags: opcache
 
-- name: change memcache cache size to {{ memcached_cache_size }}
+- name: Change memcache cache size to {{ memcached_cache_size }}
   lineinfile:
       dest: /etc/init.d/memcached
       regexp: "^#?MEMSIZE"
