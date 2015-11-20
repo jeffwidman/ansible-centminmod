@@ -46,15 +46,15 @@
     line: "{{ item.line }}"
     state: present
   with_items:
-    - { regexp: "^#?opcache.enable", line: "opcache.enable={{ zend_opcache_enable }}" }
-    - { regexp: "^#?opcache.memory_consumption", line: "opcache.memory_consumption={{ zend_opcache_size }}" }
+    - { regexp: "^#?opcache.enable=", line: "opcache.enable={{ zend_opcache_enable }}" }
+    - { regexp: "^#?opcache.memory_consumption=", line: "opcache.memory_consumption={{ zend_opcache_size }}" }
   notify: restart php-fpm
   tags: opcache
 
 - name: Change memcache cache size to {{ memcached_cache_size }}
   lineinfile:
       dest: /etc/init.d/memcached
-      regexp: "^#?MEMSIZE"
+      regexp: "^#?MEMSIZE="
       line: "MEMSIZE={{ memcached_cache_size }}"
   notify: restart memcached
   tags: memcached
@@ -66,8 +66,8 @@
     line: "{{ item.line }}"
     state: present
   with_items:
-    - { regexp: "^#?LF_PERMBLOCK_ALERT", line: 'LF_PERMBLOCK_ALERT = "{{ lf_permblock_alert }}"' }
-    - { regexp: "^#?TCP_OUT", line: 'TCP_OUT="{{ csf_allowed_tcp_outgoing_ports }}"' }
+    - { regexp: "^#?LF_PERMBLOCK_ALERT = ", line: 'LF_PERMBLOCK_ALERT = "{{ lf_permblock_alert }}"' }
+    - { regexp: "^#?TCP_OUT = ", line: 'TCP_OUT = "{{ csf_allowed_tcp_outgoing_ports }}"' }
   notify: restart csf
   tags: csf
 
