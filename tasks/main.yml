@@ -24,6 +24,11 @@
   # Anything listed in here will override centmin.sh variables
   template: src=custom_config.inc.j2 dest=/etc/centminmod/custom_config.inc
 
+- name: Ensure `net-tools` package installed
+  # required by CSF firewall, but not included in CentOS 7 as it's been
+  # deprecated for years
+  yum: name=net-tools state=latest
+
 - name: manually run centminmod
   pause:
     prompt: |
